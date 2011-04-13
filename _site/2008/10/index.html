@@ -1,0 +1,414 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Posts from 10/2008 - Luciano German Panaro's blog</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
+  <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+</head>
+<body class="" onload="">
+  <div id="header">
+    <div class="onecol">
+      <p>luciano germ&aacute;n panaro's blog. <a href="#footer">learn more</a>.</p>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="onecol">
+      
+ <div class="post">
+  <h1 class="title"><a href="/2008/10/15/creating-a-rack-middleware-for-minifying-your-javascript-files.html">Creating a Rack Middleware for Minifying Your Javascript files</a></h1>
+  
+  <em class="metadata">
+    Posted on 15 October 2008, under
+    <a href="/tags/jsmin.html">jsmin</a>, <a href="/tags/middleware.html">middleware</a>, <a href="/tags/rack.html">rack</a>, <a href="/tags/ruby.html">ruby</a>
+  </em>
+  
+  <div class='postcontent'>
+    <p>If you are in the Ruby world you have probably heard of <a href="http://rack.rubyforge.org/" target="_blank">Rack</a>. If you haven't, and you are a Pythonista, then you only need to know that Rack is a sort of "<a href="http://wsgi.org/wsgi/" target="_blank">WSGI</a> for Ruby". And in case you don't know what Rack or WSGI are, then here's a brief description:</p>
+
+<p><blockquote>"Rack provides a minimal, modular and adaptable interface for developing web applications in Ruby. By wrapping HTTP requests and responses in the simplest way possible, it unifies and distills the API for web servers, web frameworks, and software in between (the so-called middleware) into a single method call."</blockquote></p>
+
+<p>So you can think of Rack as a "<a href="http://macournoyer.wordpress.com/2007/12/14/rack-the-framework-framework/" target="_blank">frameworks framework</a>". <a href="http://brainspl.at/articles/2008/02/16/so-merb-core-is-built-on-rack-you-say-why-should-i-care" target="_blank">Merb</a> and other <a href="http://ramaze.net" target="_blank">ruby</a> <a href="http://railswaves.com/" target="_blank">frameworks</a> already support Rack, which means that they can share the middleware described above.</p>
+
+<h2>Creating a Rack Middleware</h2>
+
+<p>So let's say you want your application (built on Rails, Merb, Ramaze or even Rack) to intercept any request for javascript files so that you can first minify them. Below is the sample code for achieving this with a Rack Middleware:</p>
+
+<p><em>(You can checkout this code, its spec and example from <a href="http://github.com/lucianopanaro/rack-javascript-minifier" target="_blank">http://github.com/lucianopanaro/rack-javascript-minifier</a>. The javascript minifier is a port from <a href="http://www.crockford.com/javascript/jsmin.html" target="_blank">Douglas Crockford's library</a> <a href="http://github.com/rgrove/jsmin/" target="_blank">done by Ryan Grove</a>.)</em></p>
+
+<div class="highlight"><pre><code class="ruby"><span class="lineno"> 1</span>   <span class="k">class</span> <span class="nc">JavascriptMinifier</span>
+<span class="lineno"> 2</span>     <span class="n">F</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="lineno"> 5</span>       <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
+<span class="lineno"> 6</span>       <span class="vi">@root</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="lineno"> 7</span>       <span class="k">raise</span> <span class="s2">&quot;Provided path </span><span class="si">#{</span><span class="vi">@root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span> <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="vi">@root</span><span class="p">)</span>
+<span class="lineno"> 8</span>     <span class="k">end</span>
+<span class="lineno"> 9</span> 
+<span class="lineno">10</span>     <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="lineno">11</span>       <span class="n">path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="no">Utils</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">]</span><span class="p">))</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>       <span class="k">unless</span> <span class="n">path</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/.*\/(\w+\.js)$/</span><span class="p">)</span> <span class="ow">and</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="lineno">14</span>         <span class="k">return</span> <span class="vi">@app</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+<span class="lineno">15</span>       <span class="k">end</span>
+<span class="lineno">16</span> 
+<span class="lineno">17</span>       <span class="k">if</span> <span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="o">!</span><span class="n">F</span><span class="o">.</span><span class="n">readable?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="lineno">18</span>         <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;Forbidden</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="lineno">19</span>         <span class="n">size</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:bytesize</span><span class="p">)</span> <span class="p">?</span> <span class="n">body</span><span class="o">.</span><span class="n">bytesize</span> <span class="p">:</span> <span class="n">body</span><span class="o">.</span><span class="n">size</span>
+<span class="lineno">20</span>         <span class="k">return</span> <span class="o">[</span>
+<span class="lineno">21</span>           <span class="mi">403</span><span class="p">,</span>
+<span class="lineno">22</span>           <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">size</span><span class="o">.</span><span class="n">to_s</span><span class="p">},</span>
+<span class="lineno">23</span>           <span class="o">[</span><span class="n">body</span><span class="o">]</span>
+<span class="lineno">24</span>         <span class="o">]</span>
+<span class="lineno">25</span>       <span class="k">end</span>
+<span class="lineno">26</span> 
+<span class="lineno">27</span>       <span class="n">last_modified</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="lineno">28</span>       <span class="n">min_path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="s2">&quot;m_</span><span class="si">#{</span><span class="n">last_modified</span><span class="o">.</span><span class="n">to_i</span><span class="si">}</span><span class="s2">_</span><span class="si">#{</span><span class="n">F</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="lineno">29</span> 
+<span class="lineno">30</span>       <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span>
+<span class="lineno">31</span>         <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+<span class="lineno">32</span>           <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="no">JSMin</span><span class="o">.</span><span class="n">minify</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="p">}</span>
+<span class="lineno">33</span>         <span class="p">}</span>
+<span class="lineno">34</span>       <span class="k">end</span>
+<span class="lineno">35</span> 
+<span class="lineno">36</span>       <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span>
+<span class="lineno">37</span>              <span class="s2">&quot;Last-Modified&quot;</span>  <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">httpdate</span><span class="p">,</span>
+<span class="lineno">38</span>              <span class="s2">&quot;Content-Type&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;text/javascript&quot;</span><span class="p">,</span>
+<span class="lineno">39</span>              <span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span>
+<span class="lineno">40</span>             <span class="p">},</span> <span class="n">F</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">]</span>
+<span class="lineno">41</span>     <span class="k">end</span>
+<span class="lineno">42</span>   <span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Rack Middleware's interface is dead simple. As <a href="http://macournoyer.wordpress.com/2008/02/09/the-flexible-thin-anorexic-gymnast-that-democratized-deployment/">Marc-André Cournoyer points out</a>: <em>"It must have a call method and receive a Rack app as the first argument of new"</em>.</p>
+
+<p>So here, when we initialize the JavascriptMinifier, we pass the root path where the javascript files are placed. Every time it gets called, the middleware first checks if the request is for a javascript file. If it's not, it passes it to the application. If the request is for a javascript in a parent directory, then we return a forbidden (403) page. Finally, if the request passes these filters, the middleware creates a minified version of the javascript file and returns it.</p>
+
+<h2>Running your application with middleware</h2>
+
+<p>This is also really simple using <a href="http://rack.rubyforge.org/doc/classes/Rack/Builder.html" target="_blank">Rack::Builder</a>:</p>
+
+<p><blockquote>"Rack::Builder implements a small DSL to iteratively construct Rack applications. <a href="http://rack.rubyforge.org/doc/classes/Rack/Builder.html#M000112" target="_blank">use</a> adds a middleware to the stack, <a href="http://rack.rubyforge.org/doc/classes/Rack/Builder.html#M000113">run</a> dispatches to an application." </blockquote></p>
+
+<p>So here is an example of a rackup file that you can use to startup your application with some middleware:</p>
+
+<div class="highlight"><pre><code class="ruby"><span class="lineno">1</span>    <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">CommonLogger</span>
+<span class="lineno">2</span>    <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">ShowExceptions</span>
+<span class="lineno">3</span>    <span class="n">use</span> <span class="no">JavascriptMinifier</span><span class="p">,</span> <span class="s2">&quot;./&quot;</span>
+<span class="lineno">4</span>    <span class="n">run</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Lobster</span><span class="o">.</span><span class="n">new</span>
+</code></pre>
+</div>
+
+<h2>Testing and Spec'ing helpers</h2>
+
+<p>Rack provides two helpers that will be of great use for testing your application: <a href="http://rack.rubyforge.org/doc/classes/Rack/MockRequest.html" target="_blank">Rack::MockRequest</a> and <a href="http://rack.rubyforge.org/doc/classes/Rack/MockResponse.html" target="_blank">Rack::MockResponse</a>, so you have no excuses to test your Rack Middleware and do some TDD/BDD!</p>
+
+<h2>Where to go from here</h2>
+
+<p>To learn how to develop your own Rack Middleware, your best resource will be Rack sources. You will learn a lot of Rack (and Ruby in general) by reading the code and specs they provide: <a href="http://rack.rubyforge.org/doc/classes/Rack/URLMap.html" target="_blank">URLMap</a>, <a href="http://rack.rubyforge.org/doc/classes/Rack/CommonLogger.html">CommonLogger</a>, <a href="http://rack.rubyforge.org/doc/classes/Rack/File.html">File</a>. There also is a <a href="http://groups.google.com/group/rack-devel">group</a> where you can ask your questions too.</p>
+
+<p>So enjoy your trip with Rack Middleware and feel free to comment your thoughts and questions!</p>
+
+
+  </div>
+</div>
+
+
+ 
+   <hr class="separator" />
+ 
+
+ <div class="post">
+  <h1 class="title"><a href="/2008/10/05/creating-a-news-carousel-with-jquery.html">Creating a news carousel with jQuery</a></h1>
+  
+  <em class="metadata">
+    Posted on 05 October 2008, under
+    <a href="/tags/carousel.html">carousel</a>, <a href="/tags/jquery.html">jquery</a>, <a href="/tags/tutorial.html">tutorial</a>
+  </em>
+  
+  <div class='postcontent'>
+    <p>Last week I had to do a news carousel for a project I'm developing. It had been a while since I had the chance to do something interesting with jQuery, so I wanted to share the experience of how easily you can build similar widgets for your site.</p>
+
+<p>So first let's take a look at <a href="http://lucianopanaro.com/samples/carousel.html" target="_blank">what we want to build</a>.</p>
+
+<p>Now, I know that there are a few plugins out there for jQuery that probably can do this, but the point of this post is to show how simple it is to create something like this with a few lines of jQuery and CSS.</p>
+
+<p>Let's begin by defining how we will organize the content. Being a list of news, we can either use an ordered or an unordered list.</p>
+
+<div class="highlight"><pre><code class="html"><span class="lineno">1</span> <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;news_carousel&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">2</span>   <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;news&quot;</span><span class="nt">&gt;</span>
+<span class="lineno">3</span>     <span class="nt">&lt;li&gt;</span>
+<span class="lineno">4</span>       <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
+<span class="lineno">5</span>       <span class="nt">&lt;strong&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span><span class="nt">&gt;</span>Title<span class="nt">&lt;/a&gt;&lt;/strong&gt;</span>
+<span class="lineno">6</span>       <span class="nt">&lt;span&gt;</span>Description<span class="nt">&lt;/span&gt;</span>
+<span class="lineno">7</span>     <span class="nt">&lt;/li&gt;</span>
+<span class="lineno">8</span>   <span class="nt">&lt;/ul&gt;</span>
+<span class="lineno">9</span> <span class="nt">&lt;/div&gt;</span>
+</code></pre>
+</div>
+
+<p>Now that we have our content, we have to style it. The keys here are to:</p>
+
+<ul>
+  <li>Align the list elements one next to the other.</li>
+  <li>Make <em>#news_carousel</em> just show one list element at a time</li>
+  <li>Use relative and absolute positioning to show the titles and descriptions over each image</li>
+</ul>
+
+<p>Here's the CSS used in the sample with some comments:</p>
+
+<div class="highlight"><pre><code class="css"><span class="lineno"> 1</span>  <span class="nf">#news_carousel</span> <span class="p">{</span>
+<span class="lineno"> 2</span>      <span class="k">width</span><span class="o">:</span> <span class="m">444px</span><span class="p">;</span>
+<span class="lineno"> 3</span>      <span class="k">height</span><span class="o">:</span> <span class="m">333px</span><span class="p">;</span>
+<span class="lineno"> 4</span>      <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno"> 5</span>      <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno"> 6</span>      <span class="k">overflow</span><span class="o">:</span> <span class="k">hidden</span><span class="p">;</span>  <span class="c">/* this will make only show 1 li */</span>
+<span class="lineno"> 7</span>      <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+<span class="lineno"> 8</span>   <span class="p">}</span>
+<span class="lineno"> 9</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="p">{</span>
+<span class="lineno">10</span>     <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="lineno">11</span>     <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">12</span>     <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">13</span>     <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+<span class="lineno">14</span>   <span class="p">}</span>
+<span class="lineno">15</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
+<span class="lineno">16</span>     <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">17</span>     <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">18</span>     <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
+<span class="lineno">19</span>     <span class="c">/* to do absolute positioning of the child paragraph */</span>
+<span class="lineno">20</span>     <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
+<span class="lineno">21</span>     <span class="c">/* align one next to the other */</span>
+<span class="lineno">22</span>   <span class="p">}</span>
+<span class="lineno">23</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="p">{</span>
+<span class="lineno">24</span>     <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
+<span class="lineno">25</span>     <span class="k">bottom</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
+<span class="lineno">26</span>     <span class="k">left</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">27</span>     <span class="k">margin</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+<span class="lineno">28</span>   <span class="p">}</span>
+<span class="lineno">29</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="nt">strong</span> <span class="p">{</span>
+<span class="lineno">30</span>     <span class="k">display</span><span class="o">:</span> <span class="k">block</span><span class="p">;</span>
+<span class="lineno">31</span>     <span class="k">padding</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+<span class="lineno">32</span>     <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
+<span class="lineno">33</span>     <span class="k">font-size</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="lineno">34</span>     <span class="k">background</span><span class="o">:</span> <span class="m">#444</span><span class="p">;</span>
+<span class="lineno">35</span>   <span class="p">}</span>
+<span class="lineno">36</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="nt">span</span> <span class="p">{</span>
+<span class="lineno">37</span>     <span class="k">padding</span><span class="o">:</span> <span class="m">2px</span> <span class="m">5px</span><span class="p">;</span>
+<span class="lineno">38</span>     <span class="k">color</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
+<span class="lineno">39</span>     <span class="k">background</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
+<span class="lineno">40</span>   <span class="p">}</span>
+<span class="lineno">41</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="p">{</span>
+<span class="lineno">42</span>     <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
+<span class="lineno">43</span>     <span class="k">top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span> <span class="k">right</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="lineno">44</span>     <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="lineno">45</span>   <span class="p">}</span>
+<span class="lineno">46</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="nt">li</span> <span class="nt">a</span> <span class="p">{</span>
+<span class="lineno">47</span>     <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
+<span class="lineno">48</span>     <span class="k">font-size</span><span class="o">:</span> <span class="m">15px</span><span class="p">;</span>
+<span class="lineno">49</span>     <span class="k">margin</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+<span class="lineno">50</span>     <span class="k">padding</span><span class="o">:</span> <span class="m">2px</span> <span class="m">7px</span><span class="p">;</span>
+<span class="lineno">51</span>     <span class="k">background</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
+<span class="lineno">52</span>     <span class="k">text-decoration</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="lineno">53</span>     <span class="k">outline</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
+<span class="lineno">54</span>   <span class="p">}</span>
+<span class="lineno">55</span>   <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="nt">li</span> <span class="nt">a</span><span class="nc">.active</span> <span class="p">{</span>
+<span class="lineno">56</span>     <span class="k">border</span><span class="o">:</span> <span class="m">2px</span> <span class="k">solid</span> <span class="m">#ccc</span><span class="p">;</span>
+<span class="lineno">57</span>   <span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The Javascript code is pretty self-explanatory:</p>
+
+<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="kd">var</span> <span class="nx">news_carousel</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<span class="lineno"> 2</span>     <span class="kd">var</span> <span class="nx">items_size</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul li&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>     <span class="k">if</span> <span class="p">(</span><span class="nx">items_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+<span class="lineno"> 5</span> 
+<span class="lineno"> 6</span>     <span class="c1">// Calculate the total width and set that value to</span>
+<span class="lineno"> 7</span>     <span class="c1">//   the ul.news width</span>
+<span class="lineno"> 8</span>     <span class="c1">// Store each item width</span>
+<span class="lineno"> 9</span>     <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="lineno">10</span>     <span class="kd">var</span> <span class="nx">widths</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="lineno">11</span>     <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.news li img&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">12</span>       <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">).</span><span class="nx">width</span><span class="p">();</span>
+<span class="lineno">13</span>       <span class="nx">width</span> <span class="o">+=</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="lineno">14</span>     <span class="p">});</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span>     <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.news&quot;</span><span class="p">).</span><span class="nx">width</span><span class="p">(</span><span class="nx">width</span><span class="p">);</span>
+<span class="lineno">17</span> 
+<span class="lineno">18</span>     <span class="c1">// Append the controls</span>
+<span class="lineno">19</span>     <span class="nx">controls</span> <span class="o">=</span> <span class="s1">&#39;&lt;ul class=&quot;controls&quot;&gt;&lt;li&gt;&lt;a class=&quot;active&quot; href=&quot;#&quot;&gt;1&lt;/a&gt;&#39;</span><span class="p">;</span>
+<span class="lineno">20</span>     <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">items_size</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">21</span>        <span class="nx">controls</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">;</span>
+<span class="lineno">22</span>     <span class="p">}</span>
+<span class="lineno">23</span>     <span class="nx">controls</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/ul&gt;&#39;</span><span class="p">;</span>
+<span class="lineno">24</span>     <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">controls</span><span class="p">);</span>
+<span class="lineno">25</span> 
+<span class="lineno">26</span>     <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.controls li a&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">27</span>       <span class="c1">// if the ul is already moving, then do nothing</span>
+<span class="lineno">28</span>       <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.news:animated&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="lineno">29</span> 
+<span class="lineno">30</span>       <span class="kd">var</span> <span class="nx">clicked_item</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+<span class="lineno">31</span>       <span class="kd">var</span> <span class="nx">current_active</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.controls li a.active&quot;</span><span class="p">);</span>
+<span class="lineno">32</span>       <span class="kd">var</span> <span class="nx">current_index</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">current_active</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
+<span class="lineno">33</span>       <span class="kd">var</span> <span class="nx">new_index</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">clicked_item</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
+<span class="lineno">34</span>       <span class="kd">var</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">new_index</span> <span class="o">-</span> <span class="nx">current_index</span><span class="p">;</span> <span class="c1">//how many items it should be moved</span>
+<span class="lineno">35</span> 
+<span class="lineno">36</span>       <span class="k">if</span> <span class="p">(</span><span class="nx">move</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">37</span>         <span class="nx">direction</span> <span class="o">=</span> <span class="p">(</span><span class="nx">move</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">?</span> <span class="s2">&quot;-=&quot;</span><span class="o">:</span> <span class="s2">&quot;+=&quot;</span><span class="p">;</span>
+<span class="lineno">38</span>         <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.news&#39;</span><span class="p">)</span>
+<span class="lineno">39</span>           <span class="p">.</span><span class="nx">animate</span><span class="p">({</span><span class="nx">marginLeft</span><span class="o">:</span> <span class="nx">direction</span> <span class="o">+</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">new_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">},</span> <span class="mi">300</span><span class="p">);</span>
+<span class="lineno">40</span>         <span class="nx">clicked_item</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">);</span>
+<span class="lineno">41</span>         <span class="nx">current_active</span><span class="p">.</span><span class="nx">removeClass</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">);</span>
+<span class="lineno">42</span>       <span class="p">}</span>
+<span class="lineno">43</span> 
+<span class="lineno">44</span>       <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="lineno">45</span>     <span class="p">});</span>
+<span class="lineno">46</span>   <span class="p">}();</span>
+</code></pre>
+</div>
+
+<p>And that's it! Around 100 lines of code and you have your own home-made news carousel. Hope you found it useful! :)</p>
+
+<p>(Pictures taken from: <a href="http://www.flickr.com/photos/christing/268490607/">http://www.flickr.com/photos/christing/268490607/</a> and <a href="http://www.flickr.com/photos/11717181@N02/1170861540/">http://www.flickr.com/photos/11717181@N02/1170861540/</a>.)</p>
+
+
+  </div>
+</div>
+
+
+ 
+   <hr class="separator" />
+ 
+
+ <div class="post">
+  <h1 class="title"><a href="/2008/10/02/rspec-link-fest.html">RSpec Link Fest!</a></h1>
+  
+  <em class="metadata">
+    Posted on 02 October 2008, under
+    <a href="/tags/bdd.html">bdd</a>, <a href="/tags/rspec.html">rspec</a>
+  </em>
+  
+  <div class='postcontent'>
+    <p>Now that I am developing a few new ruby and ror projects I wanted to begin with BDD and RSpec. There are lots of content all around the web so here's a quick list of a few links that you might find useful if you are in your baby steps with RSpec (as I am :).</p>
+
+<p><a href="http://blog.davidchelimsky.net/2008/9/22/cucumber">RSpec Story Runner is being replaced</a> by <a href="http://github.com/aslakhellesoy/cucumber">Cucumber</a> for RSpec 1.1.5, but as mentioned <a href="http://groups.google.com/group/rspec/browse_thread/thread/1905de910b3695eb/7683b7ff750e3c44">here</a>, if you are about to start you should go with Cucumber. <a href="http://github.com/aslakhellesoy/cucumber/wikis/ruby-on-rails">Here are the instructions for installing RoR support</a>.</p>
+
+<ul>
+  <li><a href="http://rspec.info">RSpec's site</a> (there are a few <a href="http://rspec.info/documentation/rails/">examples</a> for Rails controllers, models, views and helpers)</li>
+  <li><a href="http://github.com/dchelimsky/rspec/tree">RSpec on Github</a></li>
+  <li><a href="http://github.com/aslakhellesoy/cucumber/wikis">Cucumber</a></li>
+  <li><a href="http://github.com/brynary/webrat">Webrat</a></li>
+  <li><a href="http://blog.davidchelimsky.net/">David Chelimsky's (RSpec's creator) blog</a></li>
+  <li> <a href="http://andrzejonsoftware.blogspot.com">Andrzej Krzywda's blog</a>
+<ul>
+  <li><a href="http://andrzejonsoftware.blogspot.com/2008/04/bdd-examples-with-user-stories-and.html">BDD examples with user stories and Webrat</a></li>
+  <li><a href="http://andrzejonsoftware.blogspot.com/2008/05/story-driven-development.html">Story Driven Development</a></li>
+  <li><a href="http://andrzejonsoftware.blogspot.com/2008/04/tdd-with-rails-slides-from-my-talk-at.html">TDD with Rails</a></li>
+</ul>
+</li>
+  <li><a href="http://blog.kabisa.nl/2008/01/02/RSpec-and-restful-authentication/">RSpec and Restful Authentication</a></li>
+  <li><a href="http://www.tomtenthij.co.uk/2008/1/25/rspec-plain-text-story-runner-on-a-fresh-rails-app">RSpec plain text story runner on a fresh rails app </a></li>
+  <li><a href="http://st-on-it.blogspot.com/2008/03/story-writing-is-fun.html">Story writing is fun</a></li>
+  <li><a href="http://www.joesniff.co.uk/ruby/telling-a-good-story-rspec-stories-from-the-trenches.html">Some RSpec useful links</a></li>
+  <li><a href="http://www.robbyonrails.com/articles/2008/08/19/rspec-it-should-behave-like">RSpec, it should behave like</a></li>
+  <li><a href="http://blog.emson.co.uk/2008/06/understanding-rspec-stories-a-tutorial/">Understanding RSpec stories, a tutorial</a></li>
+  <li><a href="http://www.netbeans.tv/screencasts/Nick-Sieger-Uses-RSpec-with-the-NetBeans-Ruby-Support-305/">NetBeans: Screencast on RSpec support</a></li>
+</ul>
+
+<p>Hope you find it useful!</p>
+
+
+  </div>
+</div>
+
+
+ 
+
+
+    </div>
+  </div>
+
+  <div id="footer">
+    <div class="onecol">
+      <div class="content">
+        <h2>About</h2>
+        <p>
+          I'm a 24 year old web development enthusiast.
+          Born in Buenos Aires, living in San Francisco.
+          Working at PhoneTag.
+          Check my LinkedIn profile.
+        </p>
+      </div>
+    </div>
+    <div class="onecol">
+      <div class="content" id="footer_archives">
+        <h2>Archives</h2>
+        <ul class="archive_list"><li><a href="/2008/10">10-2008</a></li>
+<li><a href="/2007/11">11-2007</a></li>
+<li><a href="/2009/03">03-2009</a></li>
+<li><a href="/2007/12">12-2007</a></li>
+<li><a href="/2008/02">02-2008</a></li>
+<li><a href="/2008/11">11-2008</a></li>
+<li><a href="/2008/03">03-2008</a></li>
+<li><a href="/2009/01">01-2009</a></li>
+<li><a href="/2010/01">01-2010</a></li>
+<li><a href="/2009/02">02-2009</a></li>
+</ul>
+    </div>
+    <div class="onecol">
+      <div class="content" id="footer_tags">
+        <h2>Tags</h2>
+        <ul class="tag_cloud"><li style="font-size:1.1em"><a href="/tags/caching.html">caching</a></li>
+<li style="font-size:1.1em"><a href="/tags/carousel.html">carousel</a></li>
+<li style="font-size:1.05em"><a href="/tags/rails.html">rails</a></li>
+<li style="font-size:1.2em"><a href="/tags/plugin.html">plugin</a></li>
+<li style="font-size:1.05em"><a href="/tags/bdd.html">bdd</a></li>
+<li style="font-size:1.05em"><a href="/tags/yui.html">yui</a></li>
+<li style="font-size:1.2em"><a href="/tags/fxqueues.html">fxqueues</a></li>
+<li style="font-size:1.05em"><a href="/tags/oauth.html">oauth</a></li>
+<li style="font-size:1.1em"><a href="/tags/rails2.0.html">rails2.0</a></li>
+<li style="font-size:1.15em"><a href="/tags/talk.html">talk</a></li>
+<li style="font-size:1.05em"><a href="/tags/rspec.html">rspec</a></li>
+<li style="font-size:1.05em"><a href="/tags/mashups.html">mashups</a></li>
+<li style="font-size:1.05em"><a href="/tags/yahoo.html">yahoo</a></li>
+<li style="font-size:1.05em"><a href="/tags/welie.html">welie</a></li>
+<li style="font-size:1.05em"><a href="/tags/jquery1.4.html">jquery1.4</a></li>
+<li style="font-size:1.05em"><a href="/tags/tip.html">tip</a></li>
+<li style="font-size:1.05em"><a href="/tags/rack.html">rack</a></li>
+<li style="font-size:1.25em"><a href="/tags/javascript.html">javascript</a></li>
+<li style="font-size:1.05em"><a href="/tags/performance.html">performance</a></li>
+<li style="font-size:1.05em"><a href="/tags/clearance.html">clearance</a></li>
+<li style="font-size:1.05em"><a href="/tags/ruby.html">ruby</a></li>
+<li style="font-size:1.1em"><a href="/tags/tutorial.html">tutorial</a></li>
+<li style="font-size:1.05em"><a href="/tags/ui patterns.html">ui patterns</a></li>
+<li style="font-size:1.05em"><a href="/tags/plaxo.html">plaxo</a></li>
+<li style="font-size:1.05em"><a href="/tags/middleware.html">middleware</a></li>
+<li style="font-size:1.05em"><a href="/tags/jsmin.html">jsmin</a></li>
+<li style="font-size:1.05em"><a href="/tags/openID.html">openID</a></li>
+<li style="font-size:1.05em"><a href="/tags/decodeuri.html">decodeuri</a></li>
+<li style="font-size:1.1em"><a href="/tags/RoR.html">RoR</a></li>
+<li style="font-size:1.45em"><a href="/tags/jquery.html">jquery</a></li>
+</ul>
+      </div>
+    </div>
+    <div class="onecol">
+      <div class="content" id="footer_social">
+        <h2>Social</h2>
+        <ul>
+          <li class="twitter"><a href="http://twitter.com/lucianopanaro">Twitter</a></li>
+          <li class="github"><a href="https://github.com/lucianopanaro">GitHub</a></li>
+          <li class="linkedin"><a href="http://www.linkedin.com/pub/luciano-panaro/4/a03/229">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
