@@ -14,7 +14,7 @@
 <body class="" onload="">
   <div id="header">
     <div class="onecol">
-      <p>luciano germ&aacute;n panaro's blog. <a href="#footer">learn more</a>.</p>
+      <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
     </div>
   </div>
 
@@ -36,20 +36,20 @@
 
 <h2>Here is how it works:</h2>
 
-<div class="highlight"><pre><code class="javascript"><span class="lineno"> 1</span> <span class="c1">// Store in cache - Returns current object</span>
-<span class="lineno"> 2</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#mainNav&quot;</span><span class="p">).</span><span class="nx">cache</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
-<span class="lineno"> 3</span> 
-<span class="lineno"> 4</span> <span class="c1">// Retrieve from cache - Returns cached object</span>
-<span class="lineno"> 5</span> <span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span> <span class="c1">// or jQueryCache(&quot;main_navigation&quot;);</span>
-<span class="lineno"> 6</span> 
-<span class="lineno"> 7</span> <span class="c1">// Remove from cache</span>
-<span class="lineno"> 8</span> <span class="nx">$$</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
-<span class="lineno"> 9</span> 
-<span class="lineno">10</span> <span class="c1">// Clear Cache</span>
-<span class="lineno">11</span> <span class="nx">$$</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
-<span class="lineno">12</span> 
-<span class="lineno">13</span> <span class="c1">// Load jQueryCache with noConflict to avoid overriding window.$$</span>
-<span class="lineno">14</span> <span class="nx">$$</span><span class="p">.</span><span class="nx">noConflict</span><span class="p">();</span>
+<div class="highlight"><pre><code class="javascript"><span class="c1">// Store in cache - Returns current object</span>
+<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#mainNav&quot;</span><span class="p">).</span><span class="nx">cache</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
+
+<span class="c1">// Retrieve from cache - Returns cached object</span>
+<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span> <span class="c1">// or jQueryCache(&quot;main_navigation&quot;);</span>
+
+<span class="c1">// Remove from cache</span>
+<span class="nx">$$</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
+
+<span class="c1">// Clear Cache</span>
+<span class="nx">$$</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+
+<span class="c1">// Load jQueryCache with noConflict to avoid overriding window.$$</span>
+<span class="nx">$$</span><span class="p">.</span><span class="nx">noConflict</span><span class="p">();</span>
 </code></pre>
 </div>
 

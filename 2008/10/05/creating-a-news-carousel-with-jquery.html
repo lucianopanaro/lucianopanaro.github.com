@@ -14,7 +14,7 @@
 <body class="" onload="">
   <div id="header">
     <div class="onecol">
-      <p>luciano germ&aacute;n panaro's blog. <a href="#footer">learn more</a>.</p>
+      <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
     </div>
   </div>
 
@@ -38,7 +38,7 @@
 
 <p>Let's begin by defining how we will organize the content. Being a list of news, we can either use an ordered or an unordered list.</p>
 
-{% highlight html linenos %}
+{% highlight html %}
 <div id="news_carousel">
   <ul class="news">
     <li>
@@ -60,7 +60,7 @@
 
 <p>Here's the CSS used in the sample with some comments:</p>
 
-{% highlight css linenos %}
+{% highlight css %}
  #news_carousel {
      width: 444px;
      height: 333px;
@@ -122,7 +122,7 @@
 
 <p>The Javascript code is pretty self-explanatory:</p>
 
-{% highlight javascript linenos %}
+{% highlight javascript %}
 var news_carousel = function() {
     var items_size = $('#news_carousel ul li').length;
 
