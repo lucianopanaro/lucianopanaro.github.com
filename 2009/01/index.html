@@ -9,7 +9,8 @@
   <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
   <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+  <link href="/js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="/js/prettify/prettify.js"></script>
   <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -25,7 +26,7 @@
 </script>
 
 </head>
-<body class="" onload="">
+<body class="" onload="prettyPrint()">
   <div id="header">
     <div class="onecol">
       <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
@@ -70,113 +71,113 @@
 
 <p>So here's the new javascript that will do this:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">carousel</span>   <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">news</span>       <span class="o">=</span> <span class="nx">carousel</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;ul.news&#39;</span><span class="p">);</span>
-    <span class="kd">var</span> <span class="nx">controls</span>   <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="c1">// Will hold the ul with the controls</span>
-    <span class="kd">var</span> <span class="nx">timer</span>      <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="c1">// Will hold the timer div</span>
-    <span class="kd">var</span> <span class="nx">wait</span>       <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="c1">// Milliseconds to wait for auto-switching</span>
-    <span class="kd">var</span> <span class="nx">widths</span>     <span class="o">=</span> <span class="p">[];</span>   <span class="c1">// Will hold the widths of each image</span>
-    <span class="kd">var</span> <span class="nx">items_size</span> <span class="o">=</span> <span class="nx">news</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">initialized</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<pre class='prettyprint'>
+$(function() {
+    var carousel   = $('#news_carousel');
+    var news       = carousel.find('ul.news');
+    var controls   = null; // Will hold the ul with the controls
+    var timer      = null; // Will hold the timer div
+    var wait       = 5000; // Milliseconds to wait for auto-switching
+    var widths     = [];   // Will hold the widths of each image
+    var items_size = news.find('li').length;
+    var initialized = false;
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">items_size</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span><span class="p">;</span> <span class="p">}</span>
+    if (!items_size) { return; }
 
-    <span class="c1">// Controls html to append</span>
-    <span class="kd">var</span> <span class="nx">controls_str</span> <span class="o">=</span> <span class="s1">&#39;&lt;ul class=&quot;controls&quot;&gt;&#39;</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">items_size</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">controls_str</span> <span class="o">+=</span> <span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">controls_str</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/ul&gt;&#39;</span><span class="p">;</span>
+    // Controls html to append
+    var controls_str = '&lt;ul class="controls"&gt;';
+    for ( var i = 1; i &lt;= items_size; i++) {
+       controls_str += '&lt;li&gt;&lt;a href="#"&gt;' + i + '&lt;/a&gt;&lt;/li&gt;';
+    }
+    controls_str += '&lt;/ul&gt;';
 
-    <span class="c1">// Cache the controls list</span>
-    <span class="nx">controls</span> <span class="o">=</span> <span class="nx">carousel</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">controls_str</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;ul.controls&#39;</span><span class="p">);</span>
+    // Cache the controls list
+    controls = carousel.append(controls_str).find('ul.controls');
 
-    <span class="c1">// Make the first button in controls active</span>
-    <span class="nx">controls</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li:first a&#39;</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
+    // Make the first button in controls active
+    controls.find('li:first a').addClass('active');
 
-    <span class="c1">// Hook to the controls&#39; click events</span>
-    <span class="nx">controls</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li a&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">move_news</span><span class="p">(</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="p">);</span>
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">});</span>
+    // Hook to the controls' click events
+    controls.find('li a').click(function(event) {
+      move_news( $(this) );
+      return false;
+    });
 
-    <span class="c1">// Append the timer and cache it</span>
-    <span class="nx">timer</span> <span class="o">=</span> <span class="nx">carousel</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;timer&quot;&gt;&lt;/div&gt;&#39;</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;div.timer&#39;</span><span class="p">);</span>
+    // Append the timer and cache it
+    timer = carousel.append('&lt;div class="timer"&gt;&lt;/div&gt;').find('div.timer');
 
-    <span class="c1">// Store each item&#39;s width and calculate the total width</span>
-    <span class="nx">news</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li img&#39;</span><span class="p">)</span>
-        <span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">).</span><span class="nx">width</span><span class="p">();</span>
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">all_images_loaded</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span> <span class="nx">init_carousel</span><span class="p">();</span> <span class="p">}</span>
-        <span class="p">})</span>
-        <span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">news</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li img&#39;</span><span class="p">).</span><span class="nx">index</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-            <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">width</span><span class="p">();</span>
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">all_images_loaded</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span> <span class="nx">init_carousel</span><span class="p">();</span> <span class="p">}</span>
-        <span class="p">});</span>
-
-
-    <span class="kd">function</span> <span class="nx">all_images_loaded</span><span class="p">()</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">items_size</span> <span class="o">==</span> <span class="nx">widths</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">jQuery</span><span class="p">.</span><span class="nx">inArray</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">widths</span><span class="p">)</span>  <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-      <span class="p">}</span>
-
-      <span class="kd">var</span> <span class="nx">current_active</span> <span class="o">=</span> <span class="nx">controls</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li a.active&#39;</span><span class="p">);</span>
-
-      <span class="k">if</span> <span class="p">(</span><span class="nx">new_active</span> <span class="o">==</span> <span class="s1">&#39;next&#39;</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">next</span> <span class="o">=</span> <span class="nx">current_active</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">next</span><span class="p">().</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">next</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">{</span> <span class="nx">next</span> <span class="o">=</span> <span class="nx">controls</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;li:first a&#39;</span><span class="p">);</span> <span class="p">}</span>
-
-        <span class="nx">new_active</span> <span class="o">=</span> <span class="nx">next</span><span class="p">;</span>
-      <span class="p">}</span>
-
-      <span class="kd">var</span> <span class="nx">current_index</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">current_active</span><span class="p">.</span><span class="nx">text</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">new_index</span>     <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">new_active</span><span class="p">.</span><span class="nx">text</span><span class="p">(),</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">move_to</span>       <span class="o">=</span> <span class="nx">new_index</span> <span class="o">-</span> <span class="nx">current_index</span><span class="p">;</span>
+    // Store each item's width and calculate the total width
+    news.find('li img')
+        .each(function(i, e) {
+            widths[i] = $(e).width();
+            if ( all_images_loaded() ) { init_carousel(); }
+        })
+        .load(function(e) {
+            var i = news.find('li img').index(this);
+            widths[i] = $(this).width();
+            if ( all_images_loaded() ) { init_carousel(); }
+        });
 
 
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">move_to</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+    function all_images_loaded() {
+      if (items_size == widths.length) && (jQuery.inArray(0, widths)  1 ) {
+        return false;
+      }
 
-      <span class="kd">var</span> <span class="nx">direction</span> <span class="o">=</span> <span class="p">(</span><span class="nx">move_to</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">?</span> <span class="s1">&#39;-=&#39;</span><span class="o">:</span> <span class="s1">&#39;+=&#39;</span><span class="p">;</span>
+      var current_active = controls.find('li a.active');
 
-      <span class="kd">var</span> <span class="nx">move</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">current_index</span><span class="p">,</span> <span class="nx">new_index</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">top</span>    <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">current_index</span><span class="p">,</span> <span class="nx">new_index</span><span class="p">);</span>
+      if (new_active == 'next') {
+        var next = current_active.parent().next().find('a');
 
-      <span class="k">while</span> <span class="p">(</span><span class="nx">bottom</span> <span class="o">&lt;</span> <span class="nx">top</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">move</span> <span class="o">+=</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">bottom</span><span class="p">];</span>
-        <span class="nx">bottom</span><span class="o">++</span><span class="p">;</span>
-      <span class="p">}</span>
+        if ( !next.length ) { next = controls.find('li:first a'); }
 
-      <span class="nx">news</span><span class="p">.</span><span class="nx">animate</span><span class="p">({</span><span class="nx">marginLeft</span><span class="o">:</span> <span class="nx">direction</span> <span class="o">+</span> <span class="nx">move</span> <span class="p">},</span> <span class="mi">500</span><span class="p">);</span>
-      <span class="nx">new_active</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
-      <span class="nx">current_active</span><span class="p">.</span><span class="nx">removeClass</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
-    <span class="p">}</span>
+        new_active = next;
+      }
 
-    <span class="kd">function</span> <span class="nx">animate_timer</span><span class="p">()</span> <span class="p">{</span>
-      <span class="nx">timer</span><span class="p">.</span><span class="nx">stop</span><span class="p">().</span><span class="nx">css</span><span class="p">({</span><span class="nx">width</span><span class="o">:</span> <span class="s1">&#39;100px&#39;</span><span class="p">}).</span><span class="nx">animate</span><span class="p">({</span><span class="nx">width</span><span class="o">:</span> <span class="s1">&#39;1px&#39;</span><span class="p">},</span> <span class="nx">wait</span><span class="p">);</span>
-    <span class="p">}</span>
+      var current_index = parseInt(current_active.text(), 10) - 1;
+      var new_index     = parseInt(new_active.text(), 10) - 1;
+      var move_to       = new_index - current_index;
 
-    <span class="c1">// Initializer, called when all images are loaded</span>
-    <span class="kd">function</span> <span class="nx">init_carousel</span><span class="p">()</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">initialized</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
 
-      <span class="c1">// Set the news ul total width</span>
-      <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-      <span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">widths</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="nx">width</span> <span class="o">+=</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span> <span class="p">}</span>
-      <span class="nx">news</span><span class="p">.</span><span class="nx">width</span><span class="p">(</span><span class="nx">width</span><span class="p">);</span>
+      if (!move_to) { return false; }
 
-      <span class="c1">// Make the news change every X seconds</span>
-      <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">move_news</span><span class="p">(</span><span class="s1">&#39;next&#39;</span><span class="p">);</span> <span class="nx">animate_timer</span><span class="p">();</span> <span class="p">},</span> <span class="nx">wait</span><span class="p">);</span>
-      <span class="nx">animate_timer</span><span class="p">();</span>
+      var direction = (move_to &gt; 0)? '-=': '+=';
 
-      <span class="nx">initialized</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">});</span>
-</code></pre>
-</div>
+      var move   = 0;
+      var bottom = Math.min(current_index, new_index);
+      var top    = Math.max(current_index, new_index);
+
+      while (bottom &lt; top) {
+        move += widths[bottom];
+        bottom++;
+      }
+
+      news.animate({marginLeft: direction + move }, 500);
+      new_active.addClass('active');
+      current_active.removeClass('active');
+    }
+
+    function animate_timer() {
+      timer.stop().css({width: '100px'}).animate({width: '1px'}, wait);
+    }
+
+    // Initializer, called when all images are loaded
+    function init_carousel() {
+      if (initialized) { return false; }
+
+      // Set the news ul total width
+      var width = 0;
+      for( var i = 0; i &lt; widths.length; i++) { width += widths[i]; }
+      news.width(width);
+
+      // Make the news change every X seconds
+      setInterval(function() { move_news('next'); animate_timer(); }, wait);
+      animate_timer();
+
+      initialized = true;
+    }
+});
+</pre>
 
 
   </div>
@@ -200,17 +201,17 @@
 
 <p>The new improvement is that now you can store a selection automatically:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Will store in cache $(&quot;#sidebarNav&quot;) with #sidebarNav key</span>
-<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;#sidebarNav&quot;</span><span class="p">);</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+// Will store in cache $("#sidebarNav") with #sidebarNav key
+$$("#sidebarNav");
+</pre>
 
 <p>This will let you avoid doing <em>$("#menu").cache("menu")</em>, which is a bit redundant. Now by doing <em>$$("#menu")</em> you will be able to store it in the cache and retrieve it automatically. There is also a <strong>reload</strong> option that you can pass to that call in order to, well, reload the the cached object with that selection:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Will reload #sidebarNav with $(&quot;#sidebarNav&quot;)</span>
-<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;#sidebarNav&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+// Will reload #sidebarNav with $("#sidebarNav")
+$$("#sidebarNav", true);
+</pre>
 
 <p>You can grab the <a title="jQuery Object Cache Plugin" href="http://plugins.jquery.com/node/5633" target="_blank">new version of the Object Cache plugin here</a>.</p>
 

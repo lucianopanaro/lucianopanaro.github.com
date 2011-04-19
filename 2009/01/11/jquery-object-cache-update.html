@@ -9,7 +9,8 @@
   <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
   <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+  <link href="/js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="/js/prettify/prettify.js"></script>
   <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -25,7 +26,7 @@
 </script>
 
 </head>
-<body class="" onload="">
+<body class="" onload="prettyPrint()">
   <div id="header">
     <div class="onecol">
       <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
@@ -48,17 +49,17 @@
 
 <p>The new improvement is that now you can store a selection automatically:</p>
 
-{% highlight javascript %}
+<pre class='prettyprint'>
 // Will store in cache $("#sidebarNav") with #sidebarNav key
 $$("#sidebarNav");
-{% endhighlight %}
+</pre>
 
 <p>This will let you avoid doing <em>$("#menu").cache("menu")</em>, which is a bit redundant. Now by doing <em>$$("#menu")</em> you will be able to store it in the cache and retrieve it automatically. There is also a <strong>reload</strong> option that you can pass to that call in order to, well, reload the the cached object with that selection:</p>
 
-{% highlight javascript %}
+<pre class='prettyprint'>
 // Will reload #sidebarNav with $("#sidebarNav")
 $$("#sidebarNav", true);
-{% endhighlight %}
+</pre>
 
 <p>You can grab the <a title="jQuery Object Cache Plugin" href="http://plugins.jquery.com/node/5633" target="_blank">new version of the Object Cache plugin here</a>.</p>
 

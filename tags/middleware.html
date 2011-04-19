@@ -9,7 +9,8 @@
   <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
   <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+  <link href="/js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="/js/prettify/prettify.js"></script>
   <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -25,7 +26,7 @@
 </script>
 
 </head>
-<body class="" onload="">
+<body class="" onload="prettyPrint()">
   <div id="header">
     <div class="onecol">
       <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
@@ -56,50 +57,50 @@
 
 <p><em>(You can checkout this code, its spec and example from <a href="http://github.com/lucianopanaro/rack-javascript-minifier" target="_blank">http://github.com/lucianopanaro/rack-javascript-minifier</a>. The javascript minifier is a port from <a href="http://www.crockford.com/javascript/jsmin.html" target="_blank">Douglas Crockford's library</a> <a href="http://github.com/rgrove/jsmin/" target="_blank">done by Ryan Grove</a>.)</em></p>
 
-<div class="highlight"><pre><code class="ruby">  <span class="k">class</span> <span class="nc">JavascriptMinifier</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span>
+<pre class='prettyprint'>
+  class JavascriptMinifier
+    F = ::File
 
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-      <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
-      <span class="vi">@root</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-      <span class="k">raise</span> <span class="s2">&quot;Provided path </span><span class="si">#{</span><span class="vi">@root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span> <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="vi">@root</span><span class="p">)</span>
-    <span class="k">end</span>
+    def initialize(app, path)
+      @app = app
+      @root = F.expand_path(path)
+      raise "Provided path #{@root} does not exist" unless F.directory?(@root)
+    end
 
-    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="n">path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="no">Utils</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">]</span><span class="p">))</span>
+    def call(env)
+      path = F.join(@root, Utils.unescape(env["PATH_INFO"]))
 
-      <span class="k">unless</span> <span class="n">path</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/.*\/(\w+\.js)$/</span><span class="p">)</span> <span class="ow">and</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="vi">@app</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="k">end</span>
+      unless path.match(/.*\/(\w+\.js)$/) and F.file?(path)
+        return @app.call(env)
+      end
 
-      <span class="k">if</span> <span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="o">!</span><span class="n">F</span><span class="o">.</span><span class="n">readable?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;Forbidden</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:bytesize</span><span class="p">)</span> <span class="p">?</span> <span class="n">body</span><span class="o">.</span><span class="n">bytesize</span> <span class="p">:</span> <span class="n">body</span><span class="o">.</span><span class="n">size</span>
-        <span class="k">return</span> <span class="o">[</span>
-          <span class="mi">403</span><span class="p">,</span>
-          <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">size</span><span class="o">.</span><span class="n">to_s</span><span class="p">},</span>
-          <span class="o">[</span><span class="n">body</span><span class="o">]</span>
-        <span class="o">]</span>
-      <span class="k">end</span>
+      if env["PATH_INFO"].include?("..") or !F.readable?(path)
+        body = "Forbidden\n"
+        size = body.respond_to?(:bytesize) ? body.bytesize : body.size
+        return [
+          403,
+          {"Content-Type" =&gt; "text/plain","Content-Length" =&gt; size.to_s},
+          [body]
+        ]
+      end
 
-      <span class="n">last_modified</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-      <span class="n">min_path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="s2">&quot;m_</span><span class="si">#{</span><span class="n">last_modified</span><span class="o">.</span><span class="n">to_i</span><span class="si">}</span><span class="s2">_</span><span class="si">#{</span><span class="n">F</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      last_modified = F.mtime(path)
+      min_path = F.join(@root, "m_#{last_modified.to_i}_#{F.basename(path)}")
 
-      <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span>
-        <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-          <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="no">JSMin</span><span class="o">.</span><span class="n">minify</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="p">}</span>
-        <span class="p">}</span>
-      <span class="k">end</span>
+      unless F.file?(min_path)
+        F.open(path, "r") { |file|
+          F.open(min_path, "w") { |f| f.puts JSMin.minify(file) }
+        }
+      end
 
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span>
-             <span class="s2">&quot;Last-Modified&quot;</span>  <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">httpdate</span><span class="p">,</span>
-             <span class="s2">&quot;Content-Type&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;text/javascript&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span>
-            <span class="p">},</span> <span class="n">F</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-</code></pre>
-</div>
+      [200, {
+             "Last-Modified"  =&gt; F.mtime(min_path).httpdate,
+             "Content-Type"   =&gt; "text/javascript",
+             "Content-Length" =&gt; F.size(min_path).to_s
+            }, F.new(min_path, "r")]
+    end
+  end
+</pre>
 
 <p>Rack Middleware's interface is dead simple. As <a href="http://macournoyer.wordpress.com/2008/02/09/the-flexible-thin-anorexic-gymnast-that-democratized-deployment/">Marc-André Cournoyer points out</a>: <em>"It must have a call method and receive a Rack app as the first argument of new"</em>.</p>
 
@@ -113,12 +114,12 @@
 
 <p>So here is an example of a rackup file that you can use to startup your application with some middleware:</p>
 
-<div class="highlight"><pre><code class="ruby">   <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">CommonLogger</span>
-   <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">ShowExceptions</span>
-   <span class="n">use</span> <span class="no">JavascriptMinifier</span><span class="p">,</span> <span class="s2">&quot;./&quot;</span>
-   <span class="n">run</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Lobster</span><span class="o">.</span><span class="n">new</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+   use Rack::CommonLogger
+   use Rack::ShowExceptions
+   use JavascriptMinifier, "./"
+   run Rack::Lobster.new
+</pre>
 
 <h2>Testing and Spec'ing helpers</h2>
 

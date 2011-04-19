@@ -9,7 +9,8 @@
   <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
   <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+  <link href="/js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="/js/prettify/prettify.js"></script>
   <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -25,7 +26,7 @@
 </script>
 
 </head>
-<body class="" onload="">
+<body class="" onload="prettyPrint()">
   <div id="header">
     <div class="onecol">
       <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
@@ -56,50 +57,50 @@
 
 <p><em>(You can checkout this code, its spec and example from <a href="http://github.com/lucianopanaro/rack-javascript-minifier" target="_blank">http://github.com/lucianopanaro/rack-javascript-minifier</a>. The javascript minifier is a port from <a href="http://www.crockford.com/javascript/jsmin.html" target="_blank">Douglas Crockford's library</a> <a href="http://github.com/rgrove/jsmin/" target="_blank">done by Ryan Grove</a>.)</em></p>
 
-<div class="highlight"><pre><code class="ruby">  <span class="k">class</span> <span class="nc">JavascriptMinifier</span>
-    <span class="n">F</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span>
+<pre class='prettyprint'>
+  class JavascriptMinifier
+    F = ::File
 
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-      <span class="vi">@app</span> <span class="o">=</span> <span class="n">app</span>
-      <span class="vi">@root</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-      <span class="k">raise</span> <span class="s2">&quot;Provided path </span><span class="si">#{</span><span class="vi">@root</span><span class="si">}</span><span class="s2"> does not exist&quot;</span> <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="vi">@root</span><span class="p">)</span>
-    <span class="k">end</span>
+    def initialize(app, path)
+      @app = app
+      @root = F.expand_path(path)
+      raise "Provided path #{@root} does not exist" unless F.directory?(@root)
+    end
 
-    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="n">path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="no">Utils</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">]</span><span class="p">))</span>
+    def call(env)
+      path = F.join(@root, Utils.unescape(env["PATH_INFO"]))
 
-      <span class="k">unless</span> <span class="n">path</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sr">/.*\/(\w+\.js)$/</span><span class="p">)</span> <span class="ow">and</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">return</span> <span class="vi">@app</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-      <span class="k">end</span>
+      unless path.match(/.*\/(\w+\.js)$/) and F.file?(path)
+        return @app.call(env)
+      end
 
-      <span class="k">if</span> <span class="n">env</span><span class="o">[</span><span class="s2">&quot;PATH_INFO&quot;</span><span class="o">].</span><span class="n">include?</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="o">!</span><span class="n">F</span><span class="o">.</span><span class="n">readable?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;Forbidden</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:bytesize</span><span class="p">)</span> <span class="p">?</span> <span class="n">body</span><span class="o">.</span><span class="n">bytesize</span> <span class="p">:</span> <span class="n">body</span><span class="o">.</span><span class="n">size</span>
-        <span class="k">return</span> <span class="o">[</span>
-          <span class="mi">403</span><span class="p">,</span>
-          <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">size</span><span class="o">.</span><span class="n">to_s</span><span class="p">},</span>
-          <span class="o">[</span><span class="n">body</span><span class="o">]</span>
-        <span class="o">]</span>
-      <span class="k">end</span>
+      if env["PATH_INFO"].include?("..") or !F.readable?(path)
+        body = "Forbidden\n"
+        size = body.respond_to?(:bytesize) ? body.bytesize : body.size
+        return [
+          403,
+          {"Content-Type" =&gt; "text/plain","Content-Length" =&gt; size.to_s},
+          [body]
+        ]
+      end
 
-      <span class="n">last_modified</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-      <span class="n">min_path</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@root</span><span class="p">,</span> <span class="s2">&quot;m_</span><span class="si">#{</span><span class="n">last_modified</span><span class="o">.</span><span class="n">to_i</span><span class="si">}</span><span class="s2">_</span><span class="si">#{</span><span class="n">F</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      last_modified = F.mtime(path)
+      min_path = F.join(@root, "m_#{last_modified.to_i}_#{F.basename(path)}")
 
-      <span class="k">unless</span> <span class="n">F</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span>
-        <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-          <span class="n">F</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="n">f</span><span class="o">.</span><span class="n">puts</span> <span class="no">JSMin</span><span class="o">.</span><span class="n">minify</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="p">}</span>
-        <span class="p">}</span>
-      <span class="k">end</span>
+      unless F.file?(min_path)
+        F.open(path, "r") { |file|
+          F.open(min_path, "w") { |f| f.puts JSMin.minify(file) }
+        }
+      end
 
-      <span class="o">[</span><span class="mi">200</span><span class="p">,</span> <span class="p">{</span>
-             <span class="s2">&quot;Last-Modified&quot;</span>  <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">mtime</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">httpdate</span><span class="p">,</span>
-             <span class="s2">&quot;Content-Type&quot;</span>   <span class="o">=&gt;</span> <span class="s2">&quot;text/javascript&quot;</span><span class="p">,</span>
-             <span class="s2">&quot;Content-Length&quot;</span> <span class="o">=&gt;</span> <span class="n">F</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">min_path</span><span class="p">)</span><span class="o">.</span><span class="n">to_s</span>
-            <span class="p">},</span> <span class="n">F</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">min_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">]</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-</code></pre>
-</div>
+      [200, {
+             "Last-Modified"  =&gt; F.mtime(min_path).httpdate,
+             "Content-Type"   =&gt; "text/javascript",
+             "Content-Length" =&gt; F.size(min_path).to_s
+            }, F.new(min_path, "r")]
+    end
+  end
+</pre>
 
 <p>Rack Middleware's interface is dead simple. As <a href="http://macournoyer.wordpress.com/2008/02/09/the-flexible-thin-anorexic-gymnast-that-democratized-deployment/">Marc-André Cournoyer points out</a>: <em>"It must have a call method and receive a Rack app as the first argument of new"</em>.</p>
 
@@ -113,12 +114,12 @@
 
 <p>So here is an example of a rackup file that you can use to startup your application with some middleware:</p>
 
-<div class="highlight"><pre><code class="ruby">   <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">CommonLogger</span>
-   <span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">ShowExceptions</span>
-   <span class="n">use</span> <span class="no">JavascriptMinifier</span><span class="p">,</span> <span class="s2">&quot;./&quot;</span>
-   <span class="n">run</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Lobster</span><span class="o">.</span><span class="n">new</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+   use Rack::CommonLogger
+   use Rack::ShowExceptions
+   use JavascriptMinifier, "./"
+   run Rack::Lobster.new
+</pre>
 
 <h2>Testing and Spec'ing helpers</h2>
 
@@ -156,17 +157,17 @@
 
 <p>Let's begin by defining how we will organize the content. Being a list of news, we can either use an ordered or an unordered list.</p>
 
-<div class="highlight"><pre><code class="html"><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;news_carousel&quot;</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;news&quot;</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;li&gt;</span>
-      <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;&quot;</span> <span class="na">alt=</span><span class="s">&quot;&quot;</span> <span class="nt">/&gt;</span>
-      <span class="nt">&lt;strong&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span><span class="nt">&gt;</span>Title<span class="nt">&lt;/a&gt;&lt;/strong&gt;</span>
-      <span class="nt">&lt;span&gt;</span>Description<span class="nt">&lt;/span&gt;</span>
-    <span class="nt">&lt;/li&gt;</span>
-  <span class="nt">&lt;/ul&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+&lt;div id="news_carousel"&gt;
+  &lt;ul class="news"&gt;
+    &lt;li&gt;
+      &lt;img src="" alt="" /&gt;
+      &lt;strong&gt;&lt;a href="#"&gt;Title&lt;/a&gt;&lt;/strong&gt;
+      &lt;span&gt;Description&lt;/span&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</pre>
 
 <p>Now that we have our content, we have to style it. The keys here are to:</p>
 
@@ -178,116 +179,116 @@
 
 <p>Here's the CSS used in the sample with some comments:</p>
 
-<div class="highlight"><pre><code class="css"> <span class="nf">#news_carousel</span> <span class="p">{</span>
-     <span class="k">width</span><span class="o">:</span> <span class="m">444px</span><span class="p">;</span>
-     <span class="k">height</span><span class="o">:</span> <span class="m">333px</span><span class="p">;</span>
-     <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-     <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-     <span class="k">overflow</span><span class="o">:</span> <span class="k">hidden</span><span class="p">;</span>  <span class="c">/* this will make only show 1 li */</span>
-     <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="p">{</span>
-    <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
-    <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
-    <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">padding</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">position</span><span class="o">:</span> <span class="k">relative</span><span class="p">;</span>
-    <span class="c">/* to do absolute positioning of the child paragraph */</span>
-    <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
-    <span class="c">/* align one next to the other */</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="p">{</span>
-    <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
-    <span class="k">bottom</span><span class="o">:</span> <span class="m">10px</span><span class="p">;</span>
-    <span class="k">left</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">margin</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="nt">strong</span> <span class="p">{</span>
-    <span class="k">display</span><span class="o">:</span> <span class="k">block</span><span class="p">;</span>
-    <span class="k">padding</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
-    <span class="k">margin</span><span class="o">:</span> <span class="m">0</span><span class="p">;</span>
-    <span class="k">font-size</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
-    <span class="k">background</span><span class="o">:</span> <span class="m">#444</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.news</span> <span class="nt">li</span> <span class="nt">p</span> <span class="nt">span</span> <span class="p">{</span>
-    <span class="k">padding</span><span class="o">:</span> <span class="m">2px</span> <span class="m">5px</span><span class="p">;</span>
-    <span class="k">color</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
-    <span class="k">background</span><span class="o">:</span> <span class="m">#fff</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="p">{</span>
-    <span class="k">position</span><span class="o">:</span> <span class="k">absolute</span><span class="p">;</span>
-    <span class="k">top</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span> <span class="k">right</span><span class="o">:</span> <span class="m">20px</span><span class="p">;</span>
-    <span class="k">list-style-type</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="nt">li</span> <span class="nt">a</span> <span class="p">{</span>
-    <span class="k">float</span><span class="o">:</span> <span class="k">left</span><span class="p">;</span>
-    <span class="k">font-size</span><span class="o">:</span> <span class="m">15px</span><span class="p">;</span>
-    <span class="k">margin</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
-    <span class="k">padding</span><span class="o">:</span> <span class="m">2px</span> <span class="m">7px</span><span class="p">;</span>
-    <span class="k">background</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
-    <span class="k">text-decoration</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
-    <span class="k">outline</span><span class="o">:</span> <span class="k">none</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="nf">#news_carousel</span> <span class="nt">ul</span><span class="nc">.controls</span> <span class="nt">li</span> <span class="nt">a</span><span class="nc">.active</span> <span class="p">{</span>
-    <span class="k">border</span><span class="o">:</span> <span class="m">2px</span> <span class="k">solid</span> <span class="m">#ccc</span><span class="p">;</span>
-  <span class="p">}</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+ #news_carousel {
+     width: 444px;
+     height: 333px;
+     margin: 0;
+     padding: 0;
+     overflow: hidden;  /* this will make only show 1 li */
+     position: relative;
+  }
+  #news_carousel ul.news {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  #news_carousel ul li {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    /* to do absolute positioning of the child paragraph */
+    float: left;
+    /* align one next to the other */
+  }
+  #news_carousel ul.news li p {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    margin: 5px;
+  }
+  #news_carousel ul.news li p strong {
+    display: block;
+    padding: 5px;
+    margin: 0;
+    font-size: 20px;
+    background: #444;
+  }
+  #news_carousel ul.news li p span {
+    padding: 2px 5px;
+    color: #000;
+    background: #fff;
+  }
+  #news_carousel ul.controls {
+    position: absolute;
+    top: 0px; right: 20px;
+    list-style-type: none;
+  }
+  #news_carousel ul.controls li a {
+    float: left;
+    font-size: 15px;
+    margin: 5px;
+    padding: 2px 7px;
+    background: #000;
+    text-decoration: none;
+    outline: none;
+  }
+  #news_carousel ul.controls li a.active {
+    border: 2px solid #ccc;
+  }
+</pre>
 
 <p>The Javascript code is pretty self-explanatory:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">news_carousel</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">items_size</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul li&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+<pre class='prettyprint'>
+var news_carousel = function() {
+    var items_size = $('#news_carousel ul li').length;
 
-    <span class="k">if</span> <span class="p">(</span><span class="nx">items_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+    if (items_size == 0) return;
 
-    <span class="c1">// Calculate the total width and set that value to</span>
-    <span class="c1">//   the ul.news width</span>
-    <span class="c1">// Store each item width</span>
-    <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="kd">var</span> <span class="nx">widths</span> <span class="o">=</span> <span class="p">[];</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.news li img&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">e</span><span class="p">).</span><span class="nx">width</span><span class="p">();</span>
-      <span class="nx">width</span> <span class="o">+=</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
-    <span class="p">});</span>
+    // Calculate the total width and set that value to
+    //   the ul.news width
+    // Store each item width
+    var width = 0;
+    var widths = [];
+    $('#news_carousel ul.news li img').each(function(i, e) {
+      widths[i] = $(e).width();
+      width += widths[i];
+    });
 
-    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.news&quot;</span><span class="p">).</span><span class="nx">width</span><span class="p">(</span><span class="nx">width</span><span class="p">);</span>
+    $("#news_carousel ul.news").width(width);
 
-    <span class="c1">// Append the controls</span>
-    <span class="nx">controls</span> <span class="o">=</span> <span class="s1">&#39;&lt;ul class=&quot;controls&quot;&gt;&lt;li&gt;&lt;a class=&quot;active&quot; href=&quot;#&quot;&gt;1&lt;/a&gt;&#39;</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">items_size</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-       <span class="nx">controls</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;#&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="nx">controls</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/ul&gt;&#39;</span><span class="p">;</span>
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">controls</span><span class="p">);</span>
+    // Append the controls
+    controls = '&lt;ul class="controls"&gt;&lt;li&gt;&lt;a class="active" href="#"&gt;1&lt;/a&gt;';
+    for ( var i = 2; i &lt;= items_size; i++) {
+       controls += '&lt;/li&gt;&lt;li&gt;&lt;a href="#"&gt;' + i + '&lt;/a&gt;&lt;/li&gt;';
+    }
+    controls += '&lt;/ul&gt;';
+    $('#news_carousel').append(controls);
 
-    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.controls li a&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-      <span class="c1">// if the ul is already moving, then do nothing</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.news:animated&quot;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    $('#news_carousel ul.controls li a').click(function(event) {
+      // if the ul is already moving, then do nothing
+      if ($("#news_carousel ul.news:animated").length &gt; 0) return false;
 
-      <span class="kd">var</span> <span class="nx">clicked_item</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">current_active</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#news_carousel ul.controls li a.active&quot;</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">current_index</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">current_active</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
-      <span class="kd">var</span> <span class="nx">new_index</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">clicked_item</span><span class="p">.</span><span class="nx">text</span><span class="p">());</span>
-      <span class="kd">var</span> <span class="nx">move</span> <span class="o">=</span> <span class="nx">new_index</span> <span class="o">-</span> <span class="nx">current_index</span><span class="p">;</span> <span class="c1">//how many items it should be moved</span>
+      var clicked_item = $(event.target);
+      var current_active = $("#news_carousel ul.controls li a.active");
+      var current_index = parseInt(current_active.text());
+      var new_index = parseInt(clicked_item.text());
+      var move = new_index - current_index; //how many items it should be moved
 
-      <span class="k">if</span> <span class="p">(</span><span class="nx">move</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">direction</span> <span class="o">=</span> <span class="p">(</span><span class="nx">move</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">?</span> <span class="s2">&quot;-=&quot;</span><span class="o">:</span> <span class="s2">&quot;+=&quot;</span><span class="p">;</span>
-        <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#news_carousel ul.news&#39;</span><span class="p">)</span>
-          <span class="p">.</span><span class="nx">animate</span><span class="p">({</span><span class="nx">marginLeft</span><span class="o">:</span> <span class="nx">direction</span> <span class="o">+</span> <span class="nx">widths</span><span class="p">[</span><span class="nx">new_index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">},</span> <span class="mi">300</span><span class="p">);</span>
-        <span class="nx">clicked_item</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">);</span>
-        <span class="nx">current_active</span><span class="p">.</span><span class="nx">removeClass</span><span class="p">(</span><span class="s2">&quot;active&quot;</span><span class="p">);</span>
-      <span class="p">}</span>
+      if (move != 0) {
+        direction = (move &gt; 0)? "-=": "+=";
+        $('#news_carousel ul.news')
+          .animate({marginLeft: direction + widths[new_index-1] }, 300);
+        clicked_item.addClass("active");
+        current_active.removeClass("active");
+      }
 
-      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-    <span class="p">});</span>
-  <span class="p">}();</span>
-</code></pre>
-</div>
+      return false;
+    });
+  }();
+</pre>
 
 <p>And that's it! Around 100 lines of code and you have your own home-made news carousel. Hope you found it useful! :)</p>
 

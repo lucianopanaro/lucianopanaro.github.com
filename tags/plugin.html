@@ -9,7 +9,8 @@
   <link rel="alternate" type="application/rss+xml" title="A List Apart main RSS feed" href="/feeds.html" />
   <link rel="stylesheet" type="text/css" href="/css/reset-min.css" media="all" />
   <link rel="stylesheet" type="text/css" href="/css/style.css" media="all" />
-  <link rel="stylesheet" type="text/css" href="/css/manni.css" media="all" />
+  <link href="/js/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="/js/prettify/prettify.js"></script>
   <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -25,7 +26,7 @@
 </script>
 
 </head>
-<body class="" onload="">
+<body class="" onload="prettyPrint()">
   <div id="header">
     <div class="onecol">
       <p><a href="/">luciano germ&aacute;n panaro</a>'s blog. <a href="#footer">learn more</a>.</p>
@@ -70,17 +71,17 @@
 
 <p>The new improvement is that now you can store a selection automatically:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Will store in cache $(&quot;#sidebarNav&quot;) with #sidebarNav key</span>
-<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;#sidebarNav&quot;</span><span class="p">);</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+// Will store in cache $("#sidebarNav") with #sidebarNav key
+$$("#sidebarNav");
+</pre>
 
 <p>This will let you avoid doing <em>$("#menu").cache("menu")</em>, which is a bit redundant. Now by doing <em>$$("#menu")</em> you will be able to store it in the cache and retrieve it automatically. There is also a <strong>reload</strong> option that you can pass to that call in order to, well, reload the the cached object with that selection:</p>
 
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Will reload #sidebarNav with $(&quot;#sidebarNav&quot;)</span>
-<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;#sidebarNav&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
-</code></pre>
-</div>
+<pre class='prettyprint'>
+// Will reload #sidebarNav with $("#sidebarNav")
+$$("#sidebarNav", true);
+</pre>
 
 <p>You can grab the <a title="jQuery Object Cache Plugin" href="http://plugins.jquery.com/node/5633" target="_blank">new version of the Object Cache plugin here</a>.</p>
 
@@ -104,26 +105,26 @@
   <div class='postcontent'>
     <p>Inspired by <a href="http://benjaminsterling.com" target="_blank">Benjamin Sterling</a>'s <a href="http://benjaminsterling.com/better-jquery-code-1/" target="_blank">"Better jQuery Code"</a> article I decided to develop a simple plugin to make his first point (<em>Caching</em>) easier... nothing fancy, just a few methods, but you will hopefully find it useful.</p>
 
-<p>Its objective is to let you store a jQuery object with a simple key in a global cache, so that you can access the same object easily, without having to write the same selection, filtering or traversing code (i.e: $("#main > p") or $("#main").children(".selected").eq(0)).</p>
+<p>Its objective is to let you store a jQuery object with a simple key in a global cache, so that you can access the same object easily, without having to write the same selection, filtering or traversing code (i.e: $("#main &lt; p") or $("#main").children(".selected").eq(0)).</p>
 
 <h2>Here is how it works:</h2>
 
-<div class="highlight"><pre><code class="javascript"><span class="c1">// Store in cache - Returns current object</span>
-<span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#mainNav&quot;</span><span class="p">).</span><span class="nx">cache</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
+<pre class='prettyprint'>
+// Store in cache - Returns current object
+$("#mainNav").cache("main_navigation");
 
-<span class="c1">// Retrieve from cache - Returns cached object</span>
-<span class="nx">$$</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span> <span class="c1">// or jQueryCache(&quot;main_navigation&quot;);</span>
+// Retrieve from cache - Returns cached object
+$$("main_navigation"); // or jQueryCache("main_navigation");
 
-<span class="c1">// Remove from cache</span>
-<span class="nx">$$</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s2">&quot;main_navigation&quot;</span><span class="p">);</span>
+// Remove from cache
+$$.remove("main_navigation");
 
-<span class="c1">// Clear Cache</span>
-<span class="nx">$$</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+// Clear Cache
+$$.clear();
 
-<span class="c1">// Load jQueryCache with noConflict to avoid overriding window.$$</span>
-<span class="nx">$$</span><span class="p">.</span><span class="nx">noConflict</span><span class="p">();</span>
-</code></pre>
-</div>
+// Load jQueryCache with noConflict to avoid overriding window.$$
+$$.noConflict();
+</pre>
 
 <p>There is a lot of room for improvement, which will be done depending on the feedback I get,  so feel free to contact me with any ideas or corrections you might come up with.</p>
 
