@@ -1,456 +1,457 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://lucianopanaro.com/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/sitemap.xml/</loc>
-    <lastmod>2011-04-19T15:32:09-03:00</lastmod>
+    <loc>http://lucianopanaro.com/sitemap.xml</loc>
+    <lastmod>2011-05-01T09:43:08-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/jquery-fxqueues-plugin-2-1.html/</loc>
+    <loc>http://lucianopanaro.com/jquery-fxqueues-plugin-2-1.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/index.html/</loc>
+    <loc>http://lucianopanaro.com/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/jquery-fx-queues-plugin.html/</loc>
+    <loc>http://lucianopanaro.com/jquery-fx-queues-plugin.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/jquery-fxqueues-plugin-20.html/</loc>
+    <loc>http://lucianopanaro.com/jquery-fxqueues-plugin-20.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/404.html/</loc>
+    <loc>http://lucianopanaro.com/404.html</loc>
     <lastmod>2011-04-21T13:15:54-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/feed/index.html/</loc>
+    <loc>http://lucianopanaro.com/feed/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2010/01/index.html/</loc>
+    <loc>http://lucianopanaro.com/2010/01/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/03/index.html/</loc>
+    <loc>http://lucianopanaro.com/2009/03/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/02/index.html/</loc>
+    <loc>http://lucianopanaro.com/2009/02/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/01/index.html/</loc>
+    <loc>http://lucianopanaro.com/2009/01/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/11/index.html/</loc>
+    <loc>http://lucianopanaro.com/2008/11/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/10/index.html/</loc>
+    <loc>http://lucianopanaro.com/2008/10/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/03/index.html/</loc>
+    <loc>http://lucianopanaro.com/2008/03/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/02/index.html/</loc>
+    <loc>http://lucianopanaro.com/2008/02/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/12/index.html/</loc>
+    <loc>http://lucianopanaro.com/2007/12/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/11/index.html/</loc>
+    <loc>http://lucianopanaro.com/2007/11/index.html</loc>
     <lastmod>2011-04-13T19:08:11-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/caching.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/caching.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/carousel.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/carousel.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/rails.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/rails.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/plugin.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/plugin.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/yui.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/yui.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/fxqueues.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/fxqueues.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/bdd.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/bdd.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/talk.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/talk.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/rails2.0.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/rails2.0.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/oauth.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/oauth.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/yahoo.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/yahoo.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/welie.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/welie.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/mashups.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/mashups.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/rspec.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/rspec.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/jquery1.4.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/jquery1.4.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/rack.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/rack.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/tip.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/tip.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/javascript.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/javascript.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/performance.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/performance.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/plaxo.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/plaxo.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/ui patterns.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/ui patterns.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/ruby.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/ruby.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/clearance.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/clearance.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/tutorial.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/tutorial.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/middleware.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/middleware.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/jsmin.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/jsmin.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/openID.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/openID.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/decodeuri.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/decodeuri.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/RoR.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/RoR.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/tags/jquery.html/</loc>
-    <lastmod>2011-05-01T09:37:24-03:00</lastmod>
+    <loc>http://lucianopanaro.com/tags/jquery.html</loc>
+    <lastmod>2011-05-01T09:43:38-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
 
   <url>
-    <loc>http://lucianopanaro.com/2010/01/15/fx-queues-plugin-and-jquery-1-4.html/</loc>
+    <loc>http://lucianopanaro.com/2010/01/15/fx-queues-plugin-and-jquery-1-4.html</loc>
     <lastmod>2010-01-15T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/03/10/quick-tip-running-clearance-features.html/</loc>
+    <loc>http://lucianopanaro.com/2009/03/10/quick-tip-running-clearance-features.html</loc>
     <lastmod>2009-03-10T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/02/15/fxqueues-update-now-compatible-with-jquery-1-3-1.html/</loc>
+    <loc>http://lucianopanaro.com/2009/02/15/fxqueues-update-now-compatible-with-jquery-1-3-1.html</loc>
     <lastmod>2009-02-15T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/01/11/update-creating-a-news-carousel-with-jquery-now-with-time-based-switching.html/</loc>
+    <loc>http://lucianopanaro.com/2009/01/11/update-creating-a-news-carousel-with-jquery-now-with-time-based-switching.html</loc>
     <lastmod>2009-01-11T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2009/01/11/jquery-object-cache-update.html/</loc>
+    <loc>http://lucianopanaro.com/2009/01/11/jquery-object-cache-update.html</loc>
     <lastmod>2009-01-11T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/11/20/new-jquery-plugin-object-cache.html/</loc>
+    <loc>http://lucianopanaro.com/2008/11/20/new-jquery-plugin-object-cache.html</loc>
     <lastmod>2008-11-20T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/10/15/creating-a-rack-middleware-for-minifying-your-javascript-files.html/</loc>
+    <loc>http://lucianopanaro.com/2008/10/15/creating-a-rack-middleware-for-minifying-your-javascript-files.html</loc>
     <lastmod>2008-10-15T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/10/05/creating-a-news-carousel-with-jquery.html/</loc>
+    <loc>http://lucianopanaro.com/2008/10/05/creating-a-news-carousel-with-jquery.html</loc>
     <lastmod>2008-10-05T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/10/02/rspec-link-fest.html/</loc>
+    <loc>http://lucianopanaro.com/2008/10/02/rspec-link-fest.html</loc>
     <lastmod>2008-10-02T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/03/13/new-skin-new-old-plugin.html/</loc>
+    <loc>http://lucianopanaro.com/2008/03/13/new-skin-new-old-plugin.html</loc>
     <lastmod>2008-03-13T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2008/02/06/jquery-ui-15a-and-jquery-enchant-10a.html/</loc>
+    <loc>http://lucianopanaro.com/2008/02/06/jquery-ui-15a-and-jquery-enchant-10a.html</loc>
     <lastmod>2008-02-06T00:00:00-02:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/12/11/rubyconf-2007-videos.html/</loc>
+    <loc>http://lucianopanaro.com/2007/12/11/rubyconf-2007-videos.html</loc>
     <lastmod>2007-12-11T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/12/05/oauth-core-10-specification-released.html/</loc>
+    <loc>http://lucianopanaro.com/2007/12/05/oauth-core-10-specification-released.html</loc>
     <lastmod>2007-12-05T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/11/29/rails-20-rc-2-released.html/</loc>
+    <loc>http://lucianopanaro.com/2007/11/29/rails-20-rc-2-released.html</loc>
     <lastmod>2007-11-29T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/11/25/on-user-interface-design-patterns.html/</loc>
+    <loc>http://lucianopanaro.com/2007/11/25/on-user-interface-design-patterns.html</loc>
     <lastmod>2007-11-25T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/11/22/high-performance-javascript-why-everything-you%25e2%2580%2599ve-been-taught-is-wrong.html/</loc>
+    <loc>http://lucianopanaro.com/2007/11/22/high-performance-javascript-why-everything-you%25e2%2580%2599ve-been-taught-is-wrong.html</loc>
     <lastmod>2007-11-22T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>http://lucianopanaro.com/2007/11/18/new-jquery-queueing-plugin.html/</loc>
+    <loc>http://lucianopanaro.com/2007/11/18/new-jquery-queueing-plugin.html</loc>
     <lastmod>2007-11-18T00:00:00-03:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
